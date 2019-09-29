@@ -29,22 +29,16 @@ class App extends React.Component {
 
         // attach listener with onNext
         userRef.onSnapshot(snapShot => {
-          this.setState(
-            {
-              currentUser: {
-                id: snapShot.id,
-                ...snapShot.data(),
-              },
+          this.setState({
+            currentUser: {
+              id: snapShot.id,
+              ...snapShot.data(),
             },
-            () =>
-              console.log('Current User from State:\n', this.state.currentUser)
-          )
+          })
         })
       } else {
         this.setState({ currentUser: null })
       }
-      // this.setState({ currentUser: user })
-      // console.log('currentUser is: ', userAuth)
     })
   }
 
