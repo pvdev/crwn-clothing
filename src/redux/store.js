@@ -7,4 +7,6 @@ const middlewares = [logger]
 
 const store = createStore(rootReducer, applyMiddleware(...middlewares))
 
+console.log('Store being setup....')
+
 export default store

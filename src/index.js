@@ -8,6 +8,7 @@ import App from './App'
 
 import store from './redux/store'
 
+console.log('Loading index.js...')
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>

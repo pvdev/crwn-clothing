@@ -1,5 +1,5 @@
 import React from 'react'
-import { Switch, Route, Redirect } from 'react-router-dom'
+import { Switch, Route, Redirect, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 import './App.css'
@@ -16,10 +16,12 @@ class App extends React.Component {
   componentDidMount() {
     const { setCurrentUser } = this.props
 
-    // console.log('Calling componentDidMount')
+    console.log('Calling componentDidMount')
+
     // auth.onAuthStateChanged sets up a listener for authn changes
     // we pass the 'next' function and returns a function to unsubscribe user
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+      console.log('userAuth:: ', userAuth)
       if (userAuth) {
         const userRef = await createUserProfileDocument(userAuth)
 
@@ -42,6 +44,7 @@ class App extends React.Component {
   }
 
   render() {
+    // console.log('Props:: ', this.props)
     return (
       <div>
         <Header />
@@ -51,8 +54,18 @@ class App extends React.Component {
           <Route
             exact
             path='/signin'
-            render={() =>
-              this.props.currentUser ? <Redirect to='/' /> : <SignInAndSignUp />
+            render={
+              () => {
+                if (this.props.currentUser) {
+                  //this.props.history.push('/')
+                  console.log('Redirecting to /')
+                  return <Redirect to='/' />
+                  //return <HomePage />
+                } else {
+                  return <SignInAndSignUp />
+                }
+              }
+              //   this.props.currentUser ? <Redirect to='/' /> : <SignInAndSignUp />
             }
           />
           <Route component={NoMatch} />
@@ -83,7 +96,9 @@ const mapStateToProps = ({ user }) => ({
 // })
 const mapDispatchToProps = { setCurrentUser }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App)
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(App)
+)
