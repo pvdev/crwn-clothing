@@ -17,3 +17,23 @@ export const addItemToCart = (cartItems, cartItemToAdd) => {
   // support first item in empty cart also
   return [...cartItems, { ...cartItemToAdd, quantity: 1 }]
 }
+
+export const clearItemFromCart = (cartItems, itemToRemove) => {
+  return cartItems.filter(cartItem => cartItem.id !== itemToRemove.id)
+}
+
+export const decrementItemFromCart = (cartItems, cartItemToRemove) => {
+  const existingCartItem = cartItems.find(
+    cartItem => cartItem.id === cartItemToRemove.id
+  )
+
+  if (existingCartItem.quantity === 1) {
+    return clearItemFromCart(cartItems, cartItemToRemove)
+  }
+
+  return cartItems.map(cartItem =>
+    cartItem.id === cartItemToRemove.id
+      ? { ...cartItem, quantity: cartItem.quantity - 1 }
+      : cartItem
+  )
+}
