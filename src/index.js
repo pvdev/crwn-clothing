@@ -9,7 +9,7 @@ import { store, persistor } from './redux/store'
 import './index.css'
 import App from './App'
 
-console.log('Loading index.js...')
+//console.log('Loading index.js...')
 
 ReactDOM.render(
   <Provider store={store}>

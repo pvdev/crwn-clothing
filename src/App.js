@@ -21,12 +21,12 @@ class App extends React.Component {
   componentDidMount() {
     const { setCurrentUser } = this.props
 
-    console.log('Calling componentDidMount')
+    // console.log('Calling componentDidMount')
 
     // auth.onAuthStateChanged sets up a listener for authn changes
     // we pass the 'next' function and returns a function to unsubscribe user
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
-      console.log('userAuth:: ', userAuth)
+      // console.log('userAuth:: ', userAuth)
       if (userAuth) {
         const userRef = await createUserProfileDocument(userAuth)
 
@@ -44,7 +44,7 @@ class App extends React.Component {
   }
 
   componentWillUnmount() {
-    console.log('Calling componentWillUnmount')
+    // console.log('Calling componentWillUnmount')
     this.unsubscribeFromAuth()
   }
 
@@ -64,7 +64,7 @@ class App extends React.Component {
               () => {
                 if (this.props.currentUser) {
                   //this.props.history.push('/')
-                  console.log('Redirecting to /')
+                  // console.log('Redirecting to /')
                   return <Redirect to='/' />
                   //return <HomePage />
                 } else {

@@ -14,6 +14,6 @@ const store = createStore(rootReducer, applyMiddleware(...middlewares))
 
 const persistor = persistStore(store)
 
-console.log('Store being setup....')
+//console.log('Store being setup....')
 
 export { store, persistor }
