@@ -28,16 +28,33 @@ class ShopPage extends React.Component {
 
     const collectionRef = firestore.collection('collections')
 
-    this.unsubscribeFromSnapshot = collectionRef.onSnapshot(snapshot => {
+    // doing with promise style
+    collectionRef.get().then(snapshot => {
       const collectionsMap = convertCollectionsSnapshotToMap(snapshot)
       updateCollections(collectionsMap)
       this.setState({ loading: false })
     })
+
+    // doing with fetch style using api
+    // https://firestore.googleapis.com/v1/projects/crwn-db-d43db/databases/(default)/documents/
+    // fetch(
+    //   'https://firestore.googleapis.com/v1/projects/crwn-db-d43db/databases/(default)/documents/collections'
+    // )
+    //   .then(response => response.json())
+    //   .then(collections => console.log(collections))
+
+    // doing with observable style providing live updates
+    // this.unsubscribeFromSnapshot = collectionRef.onSnapshot(snapshot => {
+    //   const collectionsMap = convertCollectionsSnapshotToMap(snapshot)
+    //   updateCollections(collectionsMap)
+    //   this.setState({ loading: false })
+    // })
   }
 
   componentWillUnmount() {
     // console.log('Calling componentWillUnmount')
-    this.unsubscribeFromSnapshot()
+    // only when using observable pattern
+    //this.unsubscribeFromSnapshot()
   }
 
   render() {
