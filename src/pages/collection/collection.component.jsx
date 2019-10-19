@@ -10,13 +10,15 @@ import './collection.styles.scss'
 const CollectionPage = ({ collection }) => {
   //console.log('Collection: ', collection)
   // TODO: try with redirect to homepage or error page
-  if (!collection) {
-    return (
-      <div className='collection-page'>
-        <h2 className='title'>Section does not exist</h2>
-      </div>
-    )
-  }
+  // commented out now activates spinner with selectIsCollectionLoaded logic check
+  // if (!collection) {
+  //   console.log('CollectionPage is missing collection...')
+  //   return (
+  //     <div className='collection-page'>
+  //       <h2 className='title'>Section does not exist</h2>
+  //     </div>
+  //   )
+  // }
   const { title, items } = collection
   return (
     <div className='collection-page'>
