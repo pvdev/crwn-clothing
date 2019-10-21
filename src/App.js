@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
@@ -16,17 +16,13 @@ import { auth, createUserProfileDocument } from './firebase/firebase.utils'
 import { setCurrentUser } from './redux/user/user.actions'
 import { selectCurrentUser } from './redux/user/user.selector'
 
-class App extends React.Component {
-  unsubscribeFromAuth = null
-
-  componentDidMount() {
-    const { setCurrentUser } = this.props
-
-    // console.log('Calling componentDidMount')
+const App = ({ setCurrentUser, currentUser }) => {
+  useEffect(() => {
+    console.log('Appjs calling useEffect/componentDidMount')
 
     // auth.onAuthStateChanged sets up a listener for authn changes
     // we pass the 'next' function and returns a function to unsubscribe user
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+    const unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
       // console.log('userAuth:: ', userAuth)
       if (userAuth) {
         const userRef = await createUserProfileDocument(userAuth)
@@ -42,44 +38,41 @@ class App extends React.Component {
         setCurrentUser(null)
       }
     })
-  }
 
-  componentWillUnmount() {
-    // console.log('Calling componentWillUnmount')
-    this.unsubscribeFromAuth()
-  }
+    // add cleanup function for willUnmount scenario
+    return () => {
+      unsubscribeFromAuth()
+    }
+  }, [setCurrentUser])
 
-  render() {
-    // console.log('Props:: ', this.props)
-    return (
-      <div>
-        <Header />
-        <Switch>
-          <Route exact path='/' component={HomePage} />
-          <Route path='/shop' component={ShopPage} />
-          <Route exact path='/checkout' component={CheckoutPage} />
-          <Route
-            exact
-            path='/signin'
-            render={
-              () => {
-                if (this.props.currentUser) {
-                  //this.props.history.push('/')
-                  // console.log('Redirecting to /')
-                  return <Redirect to='/' />
-                  //return <HomePage />
-                } else {
-                  return <SignInAndSignUp />
-                }
+  return (
+    <div>
+      <Header />
+      <Switch>
+        <Route exact path='/' component={HomePage} />
+        <Route path='/shop' component={ShopPage} />
+        <Route exact path='/checkout' component={CheckoutPage} />
+        <Route
+          exact
+          path='/signin'
+          render={
+            () => {
+              if (currentUser) {
+                //this.props.history.push('/')
+                // console.log('Redirecting to /')
+                return <Redirect to='/' />
+                //return <HomePage />
+              } else {
+                return <SignInAndSignUp />
               }
-              //   this.props.currentUser ? <Redirect to='/' /> : <SignInAndSignUp />
             }
-          />
-          <Route component={NoMatch} />
-        </Switch>
-      </div>
-    )
-  }
+            //   this.props.currentUser ? <Redirect to='/' /> : <SignInAndSignUp />
+          }
+        />
+        <Route component={NoMatch} />
+      </Switch>
+    </div>
+  )
 }
 
 const NoMatch = props => {
