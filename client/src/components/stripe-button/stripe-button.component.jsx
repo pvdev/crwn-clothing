@@ -1,5 +1,6 @@
 import React from 'react'
 import StripeCheckout from 'react-stripe-checkout'
+import axios from 'axios'
 
 const StripeCheckoutButton = ({ price }) => {
   //stripe wants price is cents.
@@ -8,7 +9,24 @@ const StripeCheckoutButton = ({ price }) => {
 
   const onToken = token => {
     console.log('Token from Stripe: ', token)
-    alert('Payment Successful')
+    axios({
+      url: 'payment',
+      method: 'post',
+      data: {
+        amount: priceForStripe,
+        token,
+      },
+    })
+      .then(response => {
+        // console.log('Payment success message: ', response)
+        alert('Payment successful!')
+      })
+      .catch(error => {
+        console.log('Payment error: ', error)
+        alert(
+          'There was an issue with your payment. Please use the provided FAKE credit card data '
+        )
+      })
 
     // TODO: Empty cart and provide own message/alert
   }
