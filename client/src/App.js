@@ -18,7 +18,7 @@ import { selectCurrentUser } from './redux/user/user.selector'
 
 const App = ({ setCurrentUser, currentUser }) => {
   useEffect(() => {
-    console.log('Appjs calling useEffect/componentDidMount')
+    // console.log('Appjs calling useEffect/componentDidMount')
 
     // auth.onAuthStateChanged sets up a listener for authn changes
     // we pass the 'next' function and returns a function to unsubscribe user
@@ -77,7 +77,7 @@ const App = ({ setCurrentUser, currentUser }) => {
 
 const NoMatch = props => {
   const { location } = props
-  console.log('No Route: ', props)
+  // console.log('No Route: ', props)
   return (
     <div>
       <h3>

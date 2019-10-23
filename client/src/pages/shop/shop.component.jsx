@@ -9,7 +9,7 @@ import CollectionPageContainer from '../../pages/collection/collection.container
 
 const ShopPage = ({ fetchCollectionsStartAsync, match }) => {
   useEffect(() => {
-    console.log('ShopPage mounting...')
+    // console.log('ShopPage mounting...')
     fetchCollectionsStartAsync()
   }, [fetchCollectionsStartAsync])
 
