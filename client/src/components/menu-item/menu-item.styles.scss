@@ -1,6 +1,7 @@
 .menu-item {
-  min-width: 30%;
   height: 240px;
+  min-width: 30%;
+  overflow: hidden;
   flex: 1 1 auto;
   display: flex;
   align-items: center;
@@ -24,6 +25,10 @@
 
   &.large {
     height: 380px;
+
+    @media screen and (max-width: 800px) {
+      height: 200px;
+    }
   }
 
   &:first-child {
@@ -64,5 +69,9 @@
       font-weight: lighter;
       font-size: 16px;
     }
+  }
+
+  @media screen and (max-width: 800px) {
+    height: 200px;
   }
 }

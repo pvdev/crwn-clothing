@@ -1,14 +1,29 @@
 .header {
   height: 70px;
   width: 100%;
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 10px;
+  z-index: 5; /* make on top*/
   display: flex;
   justify-content: space-between;
   margin-bottom: 25px;
+
+  @media screen and (max-width: 800px) {
+    height: 60px;
+    padding: 10px;
+    margin-bottom: 20px;
+  }
 
   .logo-container {
     height: 100%;
     width: 70px;
     padding: 25px;
+
+    @media screen and (max-width: 800px) {
+      width: 50px;
+      padding: 0;
+    }
   }
 
   .options {
@@ -19,9 +34,18 @@
     justify-content: flex-end;
     font-weight: bold;
 
+    @media screen and (max-width: 800px) {
+      width: 80%;
+      text-align: center; /* too small; center sign in text */
+    }
+
     .option {
       padding: 10px 15px;
       cursor: pointer;
+
+      @media screen and (max-width: 800px) {
+        padding: 10px;
+      }
     }
   }
 }
