@@ -1,20 +1,25 @@
-import React, { useEffect } from 'react'
-import { Switch, Route, Redirect, withRouter } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { createStructuredSelector } from 'reselect'
+import React, { useEffect, lazy, Suspense } from "react";
+import { Switch, Route, Redirect, withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
 
-import './App.scss'
-import HomePage from './pages/homepage/homepage.component'
-import ShopPage from './pages/shop/shop.component'
-import CheckoutPage from './pages/checkout/checkout.component'
-import SignInAndSignUp from './components/sign-in-and-sign-up/sign-in-and-sign-up.component'
+import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
 
-import Header from './components/header/header.component'
+import { setCurrentUser } from "./redux/user/user.actions";
+import { selectCurrentUser } from "./redux/user/user.selector";
 
-import { auth, createUserProfileDocument } from './firebase/firebase.utils'
+import "./App.scss";
 
-import { setCurrentUser } from './redux/user/user.actions'
-import { selectCurrentUser } from './redux/user/user.selector'
+import Header from "./components/header/header.component";
+import Spinner from "./components/spinner/spinner.component";
+import ErrorBoundary from "./components/error-boundary/error-boundary-component";
+
+const HomePage = lazy(() => import("./pages/homepage/homepage.component"));
+const ShopPage = lazy(() => import("./pages/shop/shop.component"));
+const CheckoutPage = lazy(() => import("./pages/checkout/checkout.component"));
+const SignInAndSignUp = lazy(() =>
+  import("./components/sign-in-and-sign-up/sign-in-and-sign-up.component")
+);
 
 const App = ({ setCurrentUser, currentUser }) => {
   useEffect(() => {
@@ -25,58 +30,62 @@ const App = ({ setCurrentUser, currentUser }) => {
     const unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
       // console.log('userAuth:: ', userAuth)
       if (userAuth) {
-        const userRef = await createUserProfileDocument(userAuth)
+        const userRef = await createUserProfileDocument(userAuth);
 
         // attach listener with onNext
         userRef.onSnapshot(snapShot => {
           setCurrentUser({
             id: snapShot.id,
-            ...snapShot.data(),
-          })
-        })
+            ...snapShot.data()
+          });
+        });
       } else {
-        setCurrentUser(null)
+        setCurrentUser(null);
       }
-    })
+    });
 
     // add cleanup function for willUnmount scenario
     return () => {
-      unsubscribeFromAuth()
-    }
-  }, [setCurrentUser])
+      unsubscribeFromAuth();
+    };
+  }, [setCurrentUser]);
 
   return (
     <div>
       <Header />
       <Switch>
-        <Route exact path='/' component={HomePage} />
-        <Route path='/shop' component={ShopPage} />
-        <Route exact path='/checkout' component={CheckoutPage} />
-        <Route
-          exact
-          path='/signin'
-          render={
-            () => {
-              if (currentUser) {
-                //this.props.history.push('/')
-                // console.log('Redirecting to /')
-                return <Redirect to='/' />
-                //return <HomePage />
-              } else {
-                return <SignInAndSignUp />
+        <ErrorBoundary>
+          <Suspense fallback={<Spinner />}>
+            <Route exact path="/" component={HomePage} />
+            <Route path="/shop" component={ShopPage} />
+            <Route exact path="/checkout" component={CheckoutPage} />
+            <Route
+              exact
+              path="/signin"
+              render={
+                () => {
+                  if (currentUser) {
+                    //this.props.history.push('/')
+                    // console.log('Redirecting to /')
+                    return <Redirect to="/" />;
+                    //return <HomePage />
+                  } else {
+                    return <SignInAndSignUp />;
+                  }
+                }
+                //   this.props.currentUser ? <Redirect to='/' /> : <SignInAndSignUp />
               }
-            }
-            //   this.props.currentUser ? <Redirect to='/' /> : <SignInAndSignUp />
-          }
-        />
-        <Route component={NoMatch} />
+            />
+          </Suspense>
+        </ErrorBoundary>
       </Switch>
     </div>
-  )
-}
+  );
+};
 
+// eslint-disable-next-line
 const NoMatch = props => {
-  const { location } = props
+  const { location } = props;
   // console.log('No Route: ', props)
   return (
     <div>
@@ -84,25 +93,20 @@ const NoMatch = props => {
         No match for <code>{location.pathname}</code>.
       </h3>
     </div>
-  )
-}
+  );
+};
 
 // const mapStateToProps = ({ user }) => ({
 //   currentUser: user.currentUser,
 // })
 
 const mapStateToProps = createStructuredSelector({
-  currentUser: selectCurrentUser,
-})
+  currentUser: selectCurrentUser
+});
 
 // const mapDispatchToProps = dispatch => ({
 //   setCurrentUser: user => dispatch(setCurrentUser(user)),
 // })
-const mapDispatchToProps = { setCurrentUser }
+const mapDispatchToProps = { setCurrentUser };
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(App)
-)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
